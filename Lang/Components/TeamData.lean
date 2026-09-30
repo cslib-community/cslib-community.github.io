@@ -85,6 +85,33 @@ def henson : Member := {
   role := "Drexel University. Lambda calculus, metaprogramming",
 }
 
+def rademakerArea : Member := {
+  url := "/static/team/rademaker.jpg",
+  name := "Alexandre Rademaker",
+  role := "Renaissance Philanthropy and Getulio Vargas Foundation. Logic",
+  link := "https://arademaker.github.io"
+}
+
+def schlesinger : Member := {
+  url := "/static/team/shadow.jpg",
+  name := "Samuel Schlesinger",
+  role := "Google. Complexity, cryptography, and learning theory",
+  link := "https://github.com/SamuelSchlesinger"
+}
+
+def reitwiessner : Member := {
+  url := "/static/team/shadow.jpg",
+  name := "Christian Reitwiessner",
+  role := "Complexity",
+  link := "https://github.com/crei"
+}
+
+def sorrachaiArea : Member := {
+  url := "/static/team/sorrachai.jpg",
+  name := "Sorrachai Yingchareonthawornchai",
+  role := "ETH Zurich. Algorithms and data structures",
+}
+
 
 def SteeringCommittee : Array Member :=
   #[clark, swarat, jim, kohli, leo, fabrizio]
@@ -95,7 +122,8 @@ def renphilTeam : Array Member := #[arademaker, guilherme, jesse]
 
 def techLeads : Array Member := #[arademaker, sorrachai]
 
-def areaMaintainers : Array Member := #[henson, kim]
+def areaMaintainers : Array Member :=
+  #[henson, kim, rademakerArea, schlesinger, reitwiessner, sorrachaiArea]
 
 def contactAlexandre : Array Member := #[arademaker]
 
