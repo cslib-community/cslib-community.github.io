@@ -98,7 +98,7 @@ def schlesinger : Member := {
 }
 
 def reitwiessner : Member := {
-  url := "/static/team/shadow.jpg",
+  url := "/static/team/christian-reitwiessner.jpg",
   name := "Christian Reitwiessner",
   area := "Complexity",
   role := none,
