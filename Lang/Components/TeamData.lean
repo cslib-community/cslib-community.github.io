@@ -50,12 +50,14 @@ def sorrachai : Member := {
   url := "/static/team/sorrachai.jpg",
   name := "Sorrachai Yingchareonthawornchai",
   role := "ETH Zurich",
+  area := "Algorithms and data structures",
 }
 
 def arademaker : Member := {
   url := "/static/team/rademaker.jpg",
   name := "Alexandre Rademaker",
   role := "CSLib Director and Professor at FGV/EMAp",
+  area := "Logic",
   link := "https://arademaker.github.io"
 }
 
@@ -76,40 +78,31 @@ def jesse : Member := {
 def kim : Member := {
   url := "/static/team/kim.jpg",
   name := "Kim Morrison",
-  role := "Lean FRO. Continuous Integration and Deployment (CI/CD) with upstream (Lean, mathlib)",
+  role := "Lean FRO",
+  area := "CI/CD with upstream (Lean, mathlib)"
 }
 
 def henson : Member := {
   url := "/static/team/chris-henson.jpg",
   name := "Chris Henson",
-  role := "Drexel University. Lambda calculus, metaprogramming",
-}
-
-def rademakerArea : Member := {
-  url := "/static/team/rademaker.jpg",
-  name := "Alexandre Rademaker",
-  role := "Renaissance Philanthropy and Getulio Vargas Foundation. Logic",
-  link := "https://arademaker.github.io"
+  role := "Drexel University",
+  area := "Lambda calculus, metaprogramming"
 }
 
 def schlesinger : Member := {
-  url := "/static/team/shadow.jpg",
+  url := "/static/team/samuel-schlesinger.jpeg",
   name := "Samuel Schlesinger",
-  role := "Google. Complexity, cryptography, and learning theory",
+  role := "Google",
+  area := "Complexity, cryptography, and learning theory",
   link := "https://github.com/SamuelSchlesinger"
 }
 
 def reitwiessner : Member := {
   url := "/static/team/shadow.jpg",
   name := "Christian Reitwiessner",
-  role := "Complexity",
+  area := "Complexity",
+  role := none,
   link := "https://github.com/crei"
-}
-
-def sorrachaiArea : Member := {
-  url := "/static/team/sorrachai.jpg",
-  name := "Sorrachai Yingchareonthawornchai",
-  role := "ETH Zurich. Algorithms and data structures",
 }
 
 
@@ -123,7 +116,7 @@ def renphilTeam : Array Member := #[arademaker, guilherme, jesse]
 def techLeads : Array Member := #[arademaker, sorrachai]
 
 def areaMaintainers : Array Member :=
-  #[henson, kim, rademakerArea, schlesinger, reitwiessner, sorrachaiArea]
+  #[henson, kim, arademaker, schlesinger, reitwiessner, sorrachai]
 
 def contactAlexandre : Array Member := #[arademaker]
 
@@ -146,7 +139,7 @@ block_component +directive teamDiv (whichTeam : String) where
     return {{
         <div class="members-card">
           {{
-            ← data.mapM Components.team
+            ← data.mapM (Components.team (showArea := whichTeam == "areaMaintainers"))
           }}
         </div>
     }}

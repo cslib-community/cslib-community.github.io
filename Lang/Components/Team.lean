@@ -14,14 +14,22 @@ namespace Components
 structure Member where
   url : String
   name : String
-  role : String
+  role : Option String := none
+  area : Option String := none
   link : Option String := none
 
-def team (member : Member) : HtmlM Page Html := do
+/-- Render a member card. The `area` paragraph is only shown when `showArea` is set. -/
+def team (member : Member) (showArea : Bool := false) : HtmlM Page Html := do
   saveCss (include_str "../../static/css/team.css")
   let webLink :=
     if let some link := member.link then {{
       <a href={{link}} title=s!"{member.name}'s website" class="member-link">{{ Icon.link (fill := "var(--color-text)") (width := "18") }}</a>
+    }} else ""
+  let role :=
+    if let some role := member.role then {{ <p class="member-role">{{role}}</p> }} else ""
+  let area :=
+    if let (true, some area) := (showArea, member.area) then {{
+      <p class="member-role">{{area}}</p>
     }} else ""
   return {{
     <div class="team-card" onclick="toggleCard(this)">
@@ -31,7 +39,8 @@ def team (member : Member) : HtmlM Page Html := do
         <div class="content-area">
             <div class="member-details">
                 <div class="member-name"><span>{{member.name}}</span>{{webLink}}</div>
-                <p class="member-role">{{member.role}}</p>
+                {{role}}
+                {{area}}
             </div>
         </div>
     </div>

@@ -113,6 +113,7 @@
     color: var(--color-text-primary) !important;
     font-weight: 400 !important;
     margin-bottom: 0em !important;
+    font-size: 13px !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
 }
