@@ -4,6 +4,7 @@ open Verso.Genre Blog Theme Template
 open Verso.Output Html
 
 def notFound : Html := {{
+  <script src="/static/js/redirects.js" />
   <section class="404-container container active">
     <div class="error-container">
       <div>
