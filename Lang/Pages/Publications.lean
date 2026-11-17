@@ -2,9 +2,9 @@ import Verso.Doc.Elab
 import VersoBlog
 
 open Verso.Genre.Blog (Page blob)
-open Verso.Output Html
+open Verso.Output
 
-def li (elem : Html) : Html := {{<li>{{elem}}</li>}}
+def li (elem : Html) : Html := html%{<li>{elem}</li>}
 
 structure Link where
   name : String
@@ -13,7 +13,7 @@ structure Link where
 def Link.pdf (url : String) : Link := ⟨"PDF", url⟩
 
 def Link.toHtml (link : Link) : Html :=
-  {{ <a href={{link.url}}>{{link.name}}</a> }}
+  html%{<a href={link.url}>{link.name}</a>}
 
 structure Author where
   name : String
@@ -25,11 +25,11 @@ instance : Coe String Author where
 def Author.toHtml (author : Author) : Html :=
   match author.url with
   | none => author.name
-  | some u => {{ <a href={{u}}>{{author.name}}</a> }}
+  | some u => html%{<a href={u}>{author.name}</a>}
 
 def authorList : List Author → Html
   | [] => .empty
-  | authors => {{<ol class="authors">{{authors.toArray.map (li <| ·.toHtml)}}</ol>}}
+  | authors => html%{<ol class="authors">{authors.toArray.map (li <| ·.toHtml)}</ol>}
 
 structure Publication where
   title : String
@@ -38,13 +38,13 @@ structure Publication where
   /-- Venue, etc -/
   info : String
 
-def Publication.toHtml (pub : Publication) : Html := {{
+def Publication.toHtml (pub : Publication) : Html := html%{
   <span class="publication">
-    <span class="title">{{pub.title}}</span>" "<ul class="links">{{pub.links.toArray.map (li <| ·.toHtml)}}</ul>
-    {{authorList pub.authors}}
-    <span class="info">{{pub.info}}</span>
+    <span class="title">{pub.title}</span> <ul class="links">{pub.links.toArray.map (li <| ·.toHtml)}</ul>
+    {authorList pub.authors}
+    <span class="info">{pub.info}</span>
   </span>
-}}
+}
 
 namespace Authors
 
@@ -81,19 +81,15 @@ def pubs : Array Publication := #[
   }
 ]
 
-def pubList : Html := {{
+def pubList : Html := html%{
   <ul class="publications">
-    {{pubs.map (·.toHtml) |>.map li }}
+    {pubs.map (·.toHtml) |>.map li}
   </ul>
-}}
+}
 
-def videoEmbed : Html := {{
-  <iframe width="560" height="315"
-    src="https://www.youtube.com/embed/videoseries?si=hnkmv4VJwttdpXvu&list=PLtlBXrgM1AlPIFwMaM2eDaIyK03z3Hxk-"
-    title="YouTube video player" frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="allowfullscreen"></iframe>
-}}
+def videoEmbed : Html := html%{
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?si=hnkmv4VJwttdpXvu&amp;list=PLtlBXrgM1AlPIFwMaM2eDaIyK03z3Hxk-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="allowfullscreen"></iframe>
+}
 
 #doc (Page) "News & Resources" =>
 

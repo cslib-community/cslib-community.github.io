@@ -1,7 +1,7 @@
 import VersoBlog
 import Lang.Components.Team
 
-open Verso.Output Html
+open Verso.Output
 open Lang Components
 open Verso.Genre.Blog (Page)
 
@@ -136,13 +136,11 @@ block_component +directive teamDiv (whichTeam : String) where
     let some (_, data) := teamData.find? (·.1 == whichTeam)
       | Verso.reportError s!"Didn't find '{whichTeam}'"
         return .empty
-    return {{
+    return html%{
         <div class="members-card">
-          {{
-            ← data.mapM (Components.team (showArea := whichTeam == "areaMaintainers"))
-          }}
+          {← data.mapM (Components.team (showArea := whichTeam == "areaMaintainers"))}
         </div>
-    }}
+    }
 
 end Components
 end Lang

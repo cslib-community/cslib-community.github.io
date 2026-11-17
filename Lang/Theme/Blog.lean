@@ -7,8 +7,8 @@ import Lang.Components.ArchiveEntry
 
 open Lang Components
 open Verso Genre Blog Template
-open Verso Output Html
-open Verso Doc Output Html HtmlT FS
+open Verso Output
+open Verso Doc Output Doc.Html HtmlT FS
 
 namespace Lang
 
@@ -91,46 +91,42 @@ def postTemplate : Template := do
   let nav := collectH1 content
   let metadata ← param? "metadata"
 
-  pure {{
-    <main class=s!"container">
-    <div class=s!"{if nav.isSome then "post-grid" else "post-center"} post-page" role="main">
-      <article class="post-container" id={{(metadata >>= (Post.Meta.htmlId)) |>.getD "post"}}>
-        <h1>{{← param "title"}}</h1>
-        {{ match metadata with
+  pure html%{
+    <main class={s!"container"}>
+    <div class={s!"{if nav.isSome then "post-grid" else "post-center"} post-page"} role="main">
+      <article class="post-container" id={(metadata >>= (Post.Meta.htmlId)) |>.getD "post"}>
+        <h1>{← param "title"}</h1>
+        {match metadata with
           | none => Html.empty
-          | some md => {{
+          | some md => html%{
               <div class="metadata">
-                {{(md : Post.PartMetadata).authors.map ({{<div class="author">{{Lean.Html.text ·}}</div>}}) |>.toArray}}
+                {(md : Post.PartMetadata).authors.map (html%{<div class="author">{Lean.Html.text ·}</div>}) |>.toArray}
                 <div class="date">
-                  {{md.date.toIso8601String}}
+                  {md.date.toIso8601String}
                 </div>
-                {{if md.categories.isEmpty then Html.empty
-                  else {{
+                {if md.categories.isEmpty then Html.empty
+                  else html%{
                     <ul class="categories">
-                      {{md.categories.toArray.map (fun cat => {{<li><a href=s!"../{cat.slug}">{{cat.name}}</a></li>}})}}
+                      {md.categories.toArray.map (fun cat => html%{<li><a href={s!"../{cat.slug}"}>{cat.name}</a></li>})}
                     </ul>
                   }}
-                }}
             </div>
           }}
-        }}
         <div class="post-content">
-          {{ addSlug content }}
+          {addSlug content}
         </div>
       </article>
-      {{
-        if let some nav := nav then
-          {{
+      {if let some nav := nav then
+          html%{
             <nav class="post-index">
             <h1 class="title">
-              {{← param "title"}}
+              {← param "title"}
             </h1>
-            {{ nav }}
+            {nav}
           </nav>
-          }}
+          }
         else
-          .empty
-      }}
+          .empty}
     </div>
     </main>
-  }}
+  }

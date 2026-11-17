@@ -1,19 +1,17 @@
 import VersoBlog
 import Lang.Components.Team
 import Lang.Components.TeamData
-open Verso.Output Html
+open Verso.Output
 open Lang Components
 open Verso.Genre.Blog (Page)
 
 block_component +directive formWebsite where
   toHtml _id _json _goI _goB _contents := do
-    return {{
+    return html%{
       <p>
-        "You can read more about FORM on "
-        <a href="https://www.sdu.dk/form" target="_blank" rel="noopener noreferrer">"FORM's official website"</a>
-        " (opens in another tab)."
+        You can read more about FORM on <a href="https://www.sdu.dk/form" target="_blank" rel="noopener noreferrer">FORM's official website</a> (opens in another tab).
       </p>
-    }}
+    }
 
 #doc (Page) "FORM" =>
 

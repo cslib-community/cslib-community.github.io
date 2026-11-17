@@ -12,7 +12,7 @@ import Lang.Theme.Blog
 import Lang.Theme.Links
 import Lang.Theme.NavBar
 
-open Verso Genre Blog Template Output Doc Output Html Multi
+open Verso Genre Blog Template Output Doc Output Doc.Html Multi
 open Lang Theme Components
 
 namespace Lang
@@ -66,23 +66,23 @@ private def primaryTemplate (siteName : String) (extraHead : Html := .empty) : T
   Template.saveCss (include_str "../static/css/noJS.css")
   let path ← currentPath
 
-  return {{
+  return html%{
     <html lang="en">
-      {{ ← head siteName config home extraHead (if path == #["404"] then some "/" else none) }}
+      {← head siteName config home extraHead (if path == #["404"] then some "/" else none)}
       <body>
-        {{ ← Components.noJSBar }}
+        {← Components.noJSBar}
         <header class="site-header">
-          {{ ← buildNavBar }}
-          {{ ← buildSubNavBar }}
+          {← buildNavBar}
+          {← buildSubNavBar}
         </header>
-        {{ ← param "content" }}
-        {{ ← Components.footer }}
-        <script src="/static/js/theme.js" />
-        <script src="/static/js/copy.js" />
+        {← param "content"}
+        {← Components.footer}
+        <script src="/static/js/theme.js"/>
+        <script src="/static/js/copy.js"/>
         <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       </body>
     </html>
-  }}
+  }
 
 /--
 Templates that are basically pages with markdown content.
@@ -103,31 +103,31 @@ private def markdownPageTemplate : TemplateM Html := do
       then "post-grid"
       else "post-center"
 
-  let sectionTitle := {{
+  let sectionTitle := html%{
       <h1 class="page-title">
-        {{ ← param "title"}}
+        {← param "title"}
       </h1>
-  }}
+  }
 
   let postList :=
     match (← param? "posts") with
     | none => Html.empty
     | some html => html
 
-  return {{
-    <main class=s!"container">
-      <div class=s!"{postPageContent} post-page">
+  return html%{
+    <main class={s!"container"}>
+      <div class={s!"{postPageContent} post-page"}>
         <article class="post-container">
           <div class="post-content">
-            {{ if needsTitle path then sectionTitle else .empty }}
-            {{ if isUseCases path then {{ <div class="use-cases-grid"> {{ postList }} </div> }} else postList }}
-            {{ addSlug content }}
+            {if needsTitle path then sectionTitle else .empty}
+            {if isUseCases path then html%{<div class="use-cases-grid">{postList}</div>} else postList}
+            {addSlug content}
           </div>
         </article>
-        {{ if indexPage path then aside title <$> nav else .empty }}
+        {if indexPage path then aside title <$> nav else .empty}
       </div>
     </main>
-  }}
+  }
 
 /--
 Pages that have a free design with a lot of custom components, like the home page.
@@ -137,14 +137,14 @@ private def freePageTemplate : TemplateM Html := do
   let postList :=
     match (← param? "posts") with
     | none => Html.empty
-    | some html => {{ <section class="page-content container"> {{ html }} </section> }}
+    | some html => html%{<section class="page-content container">{html}</section>}
 
-  return {{
+  return html%{
     <main>
-      {{ ← param "content" }}
-      {{ postList }}
+      {← param "content"}
+      {postList}
     </main>
-  }}
+  }
 
 /--
 Templates for common pages.
@@ -160,16 +160,16 @@ private def pageTemplate : TemplateM Html := do
 Template for category pages, which list posts in a category.
 -/
 private def categoryTemplate : TemplateM Html := do
-  return {{
-    <div class=s!"main content-page" role="main">
+  return html%{
+    <div class={s!"main content-page"} role="main">
       <section class="page-section container">
        <h1 class="page-title">
-        {{ ← param "title"}}
+        {← param "title"}
        </h1>
-        {{ (← param? "posts" : Option Html) }}
+        {(← param? "posts" : Option Html)}
       </section>
       </div>
-    }}
+    }
 
 /--
 The final theme definition for Verso with custom templates.

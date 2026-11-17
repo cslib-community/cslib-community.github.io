@@ -6,7 +6,7 @@ import Lang.Pages.Home.Sponsors
 open Verso.Genre.Blog (Page)
 open Verso.Genre Blog Theme Template
 open Verso.Genre.Blog.Site.Syntax
-open Verso.Output Html
+open Verso.Output
 open Verso.Genre.Blog
 open Verso.Doc
 open Lang.Components
