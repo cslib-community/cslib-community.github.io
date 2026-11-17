@@ -10,9 +10,9 @@ namespace Components
 
 private def extractText (html : Html) : String :=
   match html with
-  | Html.text _ content => content
-  | Html.tag _ _ contents => extractText contents
-  | Html.seq contents =>
+  | .text content | .raw content => content
+  | .element _ _ contents => extractText contents
+  | .seq contents =>
     contents.foldl (fun acc h => acc ++ extractText h) ""
 
 private def htmlTextLength (html : Html) : Nat :=
@@ -35,7 +35,7 @@ private def truncateHtml (html : Html) (maxLength : Nat) : Html :=
             else acc ++ "..."
         else buildResult newAcc rest
     let truncatedText := buildResult "" words
-    Html.text false truncatedText
+    Lean.Html.raw truncatedText
 
 def archiveEntry (target : String) (metadata : Option Post.PartMetadata) (title : String) (summary : Option Html) (image : Option (String × String)) : Html :=
   {{
@@ -48,7 +48,7 @@ def archiveEntry (target : String) (metadata : Option Post.PartMetadata) (title 
           | none => Html.empty
           | some md => {{
             <div class="metadata">
-              {{(md : Post.PartMetadata).authors.map ({{<div class="author">{{Html.text true ·}}</div>}}) |>.toArray}}
+              {{(md : Post.PartMetadata).authors.map ({{<div class="author">{{Lean.Html.text ·}}</div>}}) |>.toArray}}
               <div class="date">
                 {{md.date.toIso8601String}}
               </div>

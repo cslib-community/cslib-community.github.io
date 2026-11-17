@@ -23,23 +23,24 @@ def archiveEntry : Template := do
   return #[Components.archiveEntry target post.contents.metadata post.contents.titleString summary none]
 
 partial def removeWrapper : Html → String
-  | .text _ s => s
-  | .tag _ _ h => removeWrapper h
+  | .text s | .raw s => s
+  | .element _ _ h => removeWrapper h
   | .seq hs => String.intercalate " " (hs.toList.map removeWrapper)
 
 partial def addSlug : Html → Html
-  | .text s e => .text s e
-  | .tag t a h =>
+  | .text s => .text s
+  | .raw s => .raw s
+  | .element t a h =>
     match t with
-    | "h1" | "h2" | "h3" | "h4" => .tag t (a.push ("id", createSlug (removeWrapper h))) h
-    | _ => .tag t a (addSlug h)
+    | "h1" | "h2" | "h3" | "h4" => .element t (a.push ("id", createSlug (removeWrapper h))) h
+    | _ => .element t a (addSlug h)
   | .seq h => .seq (h.map addSlug)
 
 partial def collectH1 (html : Html) (linkPrefix : String := "") : Option Html :=
     let res := (collect [] html |>.reverse)
     if ¬ res.isEmpty then
       let (html, _) := compact 2 res
-      Html.tag "ol" #[] #[Html.seq (html.toArray |>.map (Html.tag "li" #[]))]
+      Lean.Html.element "ol" #[] #[Html.seq (html.toArray |>.map (Lean.Html.element "li" #[]))]
     else
       none
   where
@@ -51,8 +52,8 @@ partial def collectH1 (html : Html) (linkPrefix : String := "") : Option Html :=
       | _ => 0
 
     collect (col : List (Nat × String)) : Html → List (Nat × String)
-      | .text _ _ => col
-      | .tag t _ h =>
+      | .text _ | .raw _ => col
+      | .element t _ h =>
         match t with
         | "h1" | "h2" | "h3" | "h4" => (getLevel t, removeWrapper h) :: col
         | _ => collect col h
@@ -62,10 +63,10 @@ partial def collectH1 (html : Html) (linkPrefix : String := "") : Option Html :=
       | (level, str) :: xs =>
         if level = current then
           let slug := createSlug str
-          let headingLink := Html.tag "a" #[("href", s!"{linkPrefix}#{slug}")] #[Html.text false str]
+          let headingLink := Lean.Html.element "a" #[("href", s!"{linkPrefix}#{slug}")] #[Lean.Html.raw str]
 
           let (children, remaining) := compactChildren (level + 1) xs
-          let item := if children.isEmpty then headingLink else Html.seq #[headingLink, Html.tag "ol" #[] (Html.seq children.toArray)]
+          let item := if children.isEmpty then headingLink else Html.seq #[headingLink, Lean.Html.element "ol" #[] (Html.seq children.toArray)]
           let (siblings, final) := compact level remaining
 
           (item :: siblings, final)
@@ -80,7 +81,7 @@ partial def collectH1 (html : Html) (linkPrefix : String := "") : Option Html :=
         if level >= minLevel then
           let (item, remaining) := compact level ((level, str) :: xs)
           let (siblings, final) := compactChildren minLevel remaining
-          (item.map (Html.tag "li" #[]) ++ siblings, final)
+          (item.map (Lean.Html.element "li" #[]) ++ siblings, final)
         else
           ([], (level, str) :: xs)
       | [] => ([], [])
@@ -99,7 +100,7 @@ def postTemplate : Template := do
           | none => Html.empty
           | some md => {{
               <div class="metadata">
-                {{(md : Post.PartMetadata).authors.map ({{<div class="author">{{Html.text true ·}}</div>}}) |>.toArray}}
+                {{(md : Post.PartMetadata).authors.map ({{<div class="author">{{Lean.Html.text ·}}</div>}}) |>.toArray}}
                 <div class="date">
                   {{md.date.toIso8601String}}
                 </div>
