@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
   schedule:
     - cron: '0 */12 * * *'
@@ -26,17 +27,14 @@ jobs:
           repository: leanprover/cslib
           path: cslib
 
-      - name: Install elan
-        run: |
-          set -o pipefail
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain none -y
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Install Lean and build
+        uses: leanprover/lean-action@v1
+        with:
+          build-args: --wfail
+          test: false
+          lint: false
 
-      - name: Set up elan for website
-        run: |
-          elan default $(cat lean-toolchain)
-
-      - name: Build website
+      - name: Generate website
         run: |
           lake run generate
 
@@ -67,6 +65,7 @@ jobs:
 
   deploy:
     needs: build-docs
+    if: github.ref == 'refs/heads/main'
 
     permissions:
       pages: write
@@ -80,6 +79,5 @@ jobs:
 
     steps:
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'
         id: deployment
         uses: actions/deploy-pages@v5
