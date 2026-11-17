@@ -7,7 +7,7 @@ import Lang.Pages.Initiative.Team
 import Lang.Pages.Initiative.Roadmap
 import Lang.Pages.Initiative.Contact
 
-open Verso.Output Html
+open Verso.Output
 open Lang Components
 open Verso.Genre.Blog (Page page_link)
 

@@ -3,7 +3,7 @@ import Verso.Doc.Html
 import VersoBlog
 
 open Verso.Genre.Blog
-open Verso.Output Html
+open Verso.Output
 open Verso.Doc Html
 open Verso ArgParse
 open Verso.Genre

@@ -5,7 +5,7 @@ import Lang.Components.NavBar
 import Lang.Theme.Head
 
 open Verso.Genre Blog
-open Verso.Output Html
+open Verso.Output
 open Lang
 
 namespace Lang

@@ -2,7 +2,7 @@ import Verso.Doc.Html
 import VersoBlog
 import Lang.Components.Icon
 
-open Verso.Output Html
+open Verso.Output
 open Verso.Genre.Blog Template
 
 namespace Lang
@@ -29,21 +29,15 @@ def selectorInput (id : String) (isActive : Bool) (idx : Nat) : ComponentM Html 
     }
   "
 
-  let html := {{ <input type="radio" id={{componentId}} name=s!"tabs-{id}" hidden="true" /> }}
+  let html := html%{<input type="radio" id={componentId} name={s!"tabs-{id}"} hidden="true"/>}
   return if isActive then html |> setAttribute "checked" "true" else html
 
 def selectorItem (id : String) (isActive : Bool) (idx : Nat) (content : String) : ComponentM Html := do
-  let html := {{
-    <label
-      class=s!"tab-button"
-      role="tab"
-      for=s!"tab-input-{id}-{idx}"
-      tabindex="0"
-      data-id={{toString idx}}
-    >
-      {{ content }}
+  let html := html%{
+    <label class={s!"tab-button"} role="tab" for={s!"tab-input-{id}-{idx}"} tabindex="0" data-id={toString idx}>
+      {content}
     </label>
-  }}
+  }
 
   let html :=
     if isActive
@@ -57,26 +51,21 @@ def selector (id : String) (lbl : String) (active : Nat) (options : Array String
 
   let ariaLabel := s!"{lbl} – {options.size} options"
 
-  return {{
-    {{ ← options.mapIdxM fun idx _ => selectorInput id (idx == active) idx }}
-    <nav class="card tab-list" role="tablist" aria-label={{ariaLabel}} data-id={{id}}>
-      {{ ← options.mapIdxM fun idx txt => selectorItem id (idx == active) idx txt }}
+  return html%{
+    {← options.mapIdxM fun idx _ => selectorInput id (idx == active) idx}
+    <nav class="card tab-list" role="tablist" aria-label={ariaLabel} data-id={id}>
+      {← options.mapIdxM fun idx txt => selectorItem id (idx == active) idx txt}
     </nav>
-  }}
+  }
 
 def tabPanel (sectionId : String) (id : Nat) (active : Bool) (sameSize : Bool) (tabClasses : String) (content : Html) : Html :=
-  {{
-      <section
-        class={{ String.intercalate " " <| ["tab-panel", if active then "active" else "", if sameSize then "same-size" else ""].filter (· != "") }}
-        role="tabpanel"
-        id=s!"{sectionId}-panel-{id}"
-        data-id={{ toString id }}
-      >
-        <article class={{tabClasses}}>
-          {{ content }}
+  html%{
+      <section class={String.intercalate " " <| ["tab-panel", if active then "active" else "", if sameSize then "same-size" else ""].filter (· != "")} role="tabpanel" id={s!"{sectionId}-panel-{id}"} data-id={toString id}>
+        <article class={tabClasses}>
+          {content}
         </article>
       </section>
-    }}
+    }
 
 def tabs (name : String) (id : String) (label : String) (active : Nat) (sameSize : Bool) (tabClasses : String) (options : Array String) (contents : Array Html) : ComponentM Html := do
   Template.saveCss (include_str "../../static/css/gallery.css")
@@ -84,14 +73,14 @@ def tabs (name : String) (id : String) (label : String) (active : Nat) (sameSize
 
   let contents := contents.mapIdx fun idx x => tabPanel id idx (idx == active) sameSize tabClasses x
 
-  return {{
-    <div class=s!"tabs-container {name}" data-id={{ id }}>
-      {{ ← selector id label active options }}
-      <div class="tab-panels" data-id={{ id }}>
-        {{ contents }}
+  return html%{
+    <div class={s!"tabs-container {name}"} data-id={id}>
+      {← selector id label active options}
+      <div class="tab-panels" data-id={id}>
+        {contents}
       </div>
     </div>
-  }}
+  }
 
 
 block_component +directive tabs' (name : String) (label : String) (sameSize : Bool) (active : Nat) (tabClasses : String) where

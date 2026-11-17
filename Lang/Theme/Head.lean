@@ -5,7 +5,7 @@ import Lang.Components.Basic
 import Lang.Components.Icon
 
 open Verso.Genre Blog Template
-open Verso.Output Html
+open Verso.Output
 
 namespace Lang
 namespace Theme
@@ -55,20 +55,20 @@ structure SocialMeta where
   articleCreator : String
 
 def SocialMeta.toHtml (data : SocialMeta) : Html :=
-  {{
-    <meta property="og:title" content={{data.title}}/>
-    <meta property="og:type" content={{data.type}}/>
-    <meta property="og:image" content={{data.image}}/>
-    <meta property="og:url" content={{data.url}}/>
-    <meta property="og:image:alt" content={{data.alt}}/>
-    <meta property="og:site_name" content={{data.siteName}}/>
-    <meta name="twitter:title" content={{data.title}}/>
-    <meta name="twitter:description" content={{data.description}}/>
-    <meta name="twitter:image" content={{data.image}}/>
-    <meta name="twitter:image:alt" content={{data.alt}}/>
-    <meta name="twitter:creator" content={{data.articleCreator}}/>
+  html%{
+    <meta property="og:title" content={data.title}/>
+    <meta property="og:type" content={data.type}/>
+    <meta property="og:image" content={data.image}/>
+    <meta property="og:url" content={data.url}/>
+    <meta property="og:image:alt" content={data.alt}/>
+    <meta property="og:site_name" content={data.siteName}/>
+    <meta name="twitter:title" content={data.title}/>
+    <meta name="twitter:description" content={data.description}/>
+    <meta name="twitter:image" content={data.image}/>
+    <meta name="twitter:image:alt" content={data.alt}/>
+    <meta name="twitter:creator" content={data.articleCreator}/>
     <meta name="twitter:card" content="summary_large_image"/>
-  }}
+  }
 
 /--
 The configuration for the head of a page.
@@ -103,12 +103,12 @@ structure HeadConfig where
 Builds the HTML for a head config.
 -/
 def HeadConfig.toHtml (data : HeadConfig) : Html :=
-  {{
-      <meta name="description" content={{ data.description }}/>
-      <link rel="icon" href={{data.faviconWhite}} />
-      <link rel="apple-touch-icon" href={{data.appleTouchIcon}} />
-      <meta name="theme-color" content={{data.color}} />
-  }}
+  html%{
+      <meta name="description" content={data.description}/>
+      <link rel="icon" href={data.faviconWhite}/>
+      <link rel="apple-touch-icon" href={data.appleTouchIcon}/>
+      <meta name="theme-color" content={data.color}/>
+  }
 
 /--
 Builds the HTML for the head of a page.
@@ -117,25 +117,23 @@ def head (siteName : String) (config : HeadConfig) (social : Option SocialMeta :
   let title ← param (α := String) "title"
   let page ← currentPath
 
-  return {{
+  return html%{
     <head>
-      {{ base.map ({{ <base href={{·}} /> }}) }}
+      {base.map (html%{<base href={·}/>})}
 
       <meta charset="UTF-8"/>
       <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-      {{
-        if page == .root
-          then {{ <title> "A Focused Effort on Formalizing Computer Science in Lean" </title> }}
-          else {{ <title>{{ title }} s!" — {siteName} "</title> }}
-      }}
+      {if page == .root
+          then html%{<title>A Focused Effort on Formalizing Computer Science in Lean</title>}
+          else html%{<title>{title}{s!" — {siteName} "}</title>}}
 
-      {{ HeadConfig.toHtml config }}
-      {{ SocialMeta.toHtml <$> social |>.getD .empty }}
+      {HeadConfig.toHtml config}
+      {SocialMeta.toHtml <$> social |>.getD .empty}
 
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oranienbaum&display=swap" />
+      <link rel="preconnect" href="https://fonts.googleapis.com"/>
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&amp;family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;family=Oranienbaum&amp;display=swap"/>
       <script src="/static/js/dark.js"/>
 
       <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
@@ -147,11 +145,11 @@ def head (siteName : String) (config : HeadConfig) (social : Option SocialMeta :
       <link rel="stylesheet" href="/static/css/navbar.css"/>
       <link rel="stylesheet" href="/static/css/footer.css"/>
 
-      {{ extraHead }}
-      {{ ← builtinHeader }}
+      {extraHead}
+      {← builtinHeader}
 
     </head>
-  }}
+  }
 
 end Theme
 end Lang

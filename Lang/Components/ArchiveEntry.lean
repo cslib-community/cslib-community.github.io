@@ -2,7 +2,7 @@ import Verso.Doc.Html
 import VersoBlog
 import Lang.Components.Icon
 
-open Verso.Output Html
+open Verso.Output
 open Verso.Genre.Blog Template
 
 namespace Lang
@@ -38,37 +38,36 @@ private def truncateHtml (html : Html) (maxLength : Nat) : Html :=
     Lean.Html.raw truncatedText
 
 def archiveEntry (target : String) (metadata : Option Post.PartMetadata) (title : String) (summary : Option Html) (image : Option (String × String)) : Html :=
-  {{
+  html%{
     <li>
-      {{ image.map (fun x => {{<img src={{x.fst}} alt={{x.snd}} />}}) }}
+      {image.map (fun x => html%{<img src={x.fst} alt={x.snd}/>})}
 
       <div class="archive-content">
 
-        {{ match metadata with
+        {match metadata with
           | none => Html.empty
-          | some md => {{
+          | some md => html%{
             <div class="metadata">
-              {{(md : Post.PartMetadata).authors.map ({{<div class="author">{{Lean.Html.text ·}}</div>}}) |>.toArray}}
+              {(md : Post.PartMetadata).authors.map (html%{<div class="author">{Lean.Html.text ·}</div>}) |>.toArray}
               <div class="date">
-                {{md.date.toIso8601String}}
+                {md.date.toIso8601String}
               </div>
             </div>
           }}
-        }}
 
-        <a href={{target}} class="title">
-          <span class="name">{{title}}</span>
+        <a href={target} class="title">
+          <span class="name">{title}</span>
         </a>
 
-        {{truncateHtml summary 200}}
+        {truncateHtml summary 200}
 
-        <a href={{target}} class="read-more">
-          "Read more"
-          {{ Icon.arrowForward (width := "20px") (fill := "#000") }}
+        <a href={target} class="read-more">
+          Read more
+          {Icon.arrowForward (width := "20px") (fill := "#000")}
         </a>
       </div>
     </li>
-  }}
+  }
 
 end Components
 end Lang

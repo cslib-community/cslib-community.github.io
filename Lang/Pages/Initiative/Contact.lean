@@ -1,7 +1,7 @@
 import VersoBlog
 import Lang.Components.Team
 import Lang.Components.TeamData
-open Verso.Output Html
+open Verso.Output
 open Lang Components
 open Verso.Genre.Blog (Page)
 

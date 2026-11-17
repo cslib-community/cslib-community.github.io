@@ -2,7 +2,7 @@ import Lean.Elab
 import VersoBlog
 
 open Verso Genre
-open Verso.Output Html
+open Verso.Output
 
 namespace Lang
 namespace Components
@@ -19,15 +19,15 @@ deriving Lean.ToJson, Lean.FromJson
 This is a method of grouping things inside of a `.seq` inside a Page or Post.
 -/
 def citation (citation : Citation) : Html :=
-  {{
+  html%{
     <div class="citation-item" id="author2023">
-        <span class="citation-authors">{{ citation.authors }}</span>
-        <span class="citation-title">{{ citation.title }}</span>
-        <span class="citation-venue">{{ citation.venue }}</span>
-        <span class="citation-year">{{ citation.date }} </span>
-        <span class="citation-pages">{{ citation.pages }}</span>
+        <span class="citation-authors">{citation.authors}</span>
+        <span class="citation-title">{citation.title}</span>
+        <span class="citation-venue">{citation.venue}</span>
+        <span class="citation-year">{citation.date}</span>
+        <span class="citation-pages">{citation.pages}</span>
     </div>
-  }}
+  }
 
 end Components
 end Lang

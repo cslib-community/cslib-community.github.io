@@ -4,7 +4,7 @@ import Lang.Components.Container
 import Lang.Components.ZulipInfo
 
 open Verso.Genre Blog Theme Template
-open Verso.Output Html
+open Verso.Output
 open Lang.Components
 
 open Verso.Genre.Blog (Page)

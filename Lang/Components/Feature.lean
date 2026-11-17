@@ -5,7 +5,7 @@ import Lean
 import Lang.Components.Icon
 
 open Lean Elab Term
-open Verso.Output Html
+open Verso.Output
 open Lang Components Icon
 open Verso Genre Blog ArgParse Doc Elab
 
@@ -32,19 +32,19 @@ def features : Array Feature := #[
 
 block_component feature (feature : Feature) where
   toHtml _ _ _ _ _ := do
-    return {{
+    return html%{
       <article class="hero-feature">
         <header class="hero-feature-title">
           <figure class="feature-icon">
-            <span class="feature-icon">{{Icon.render feature.icon}}</span>
+            <span class="feature-icon">{Icon.render feature.icon}</span>
           </figure>
-          <h3 class="feature-text">{{feature.title}}</h3>
+          <h3 class="feature-text">{feature.title}</h3>
         </header>
         <p class="hero-feature-description">
-          {{feature.desc}}
+          {feature.desc}
         </p>
       </article>
-    }}
+    }
 
 end Components
 end Lang

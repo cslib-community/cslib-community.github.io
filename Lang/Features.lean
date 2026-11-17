@@ -85,7 +85,7 @@ where
         else none
 
 open Lean.Parser in
-open Verso.Output.Html in
+open Verso.Output in
 open Lake.Toml in
 @[code_block_expander toml]
 partial def toml : CodeBlockExpander
@@ -106,14 +106,14 @@ partial def toml : CodeBlockExpander
       let #[stx] := s.stxStack.toSubarray.toArray
         | throwErrorAt str s!"Internal error parsing TOML - expected one result, got {s.stxStack.toSubarray.toArray}"
       let html := highlightToml stx
-      pure #[← ``(Block.other (BlockExt.htmlDiv "toml") #[Block.other (BlockExt.blob $(quote {{<pre>{{html}}</pre>}})) #[]])]
+      pure #[← ``(Block.other (BlockExt.htmlDiv "toml") #[Block.other (BlockExt.blob $(quote html%{<pre>{html}</pre>})) #[]])]
 where
   infoHtml : SourceInfo → Html → Html
     | .original leading _ trailing _, html =>
       .raw leading.toString ++ html ++ .raw trailing.toString
     | _, html => html
 
-  hl (cls : String) (html : Html) : Html := {{<span class={{cls}}>{{html}}</span>}}
+  hl (cls : String) (html : Html) : Html := html%{<span class={cls}>{html}</span>}
 
   highlightToml : Syntax → Html
     | .node info `null elts => infoHtml info <| elts.map highlightToml
@@ -129,7 +129,7 @@ where
     | .node info ``Lake.Toml.basicString #[s@(.atom _ str)] =>
       if let some str' := Lean.Syntax.decodeStrLit str then
         if str'.take 8 == "https://" || str'.take 7 == "http://" then
-          infoHtml info <| {{<a href={{str'}}>{{highlightToml s}}</a>}}
+          infoHtml info <| html%{<a href={str'}>{highlightToml s}</a>}
         else
           infoHtml info <| highlightToml s
       else
@@ -151,7 +151,7 @@ where
     | .node info ``Lake.Toml.array elts => infoHtml info <| elts.map highlightToml
     | .node info ``Lake.Toml.inlineTable elts => infoHtml info <| elts.map highlightToml
     | .atom info str => infoHtml info (.text str)
-    | other => {{ "Failed to highlight TOML (probably highlightToml in Lang.Features needs another pattern case): " {{toString other}} }}
+    | other => html%{Failed to highlight TOML (probably highlightToml in Lang.Features needs another pattern case): {toString other}}
 
 
 /--
@@ -231,7 +231,7 @@ define_lexed_text sh ← shHl
 
 section
 
-open Verso.Output Html
+open Verso.Output
 
 
 @[role_expander kbd]
@@ -245,10 +245,10 @@ def kbd : RoleExpander
     if h : strs.size = 0 then throwError "Expected one or more inline code literals"
     else
       let basic := String.intercalate "+" strs.toList
-      let mut keys := {{<kbd>{{strs[0]}}</kbd>}}
+      let mut keys := html%{<kbd>{strs[0]}</kbd>}
       for s in strs.drop 1 do
-        keys := keys ++ {{"+"<kbd>{{s}}</kbd>}}
-      let html : Html := {{<kbd>{{keys}}</kbd>}}
+        keys := keys ++ html%{+<kbd>{s}</kbd>}
+      let html : Html := html%{<kbd>{keys}</kbd>}
       return #[← ``(Inline.other (InlineExt.blob $(quote html)) #[Inline.code $(quote basic)])]
 
 
@@ -261,7 +261,7 @@ def color : RoleExpander
     let `(inline|code( $s:str )) := str
       | throwErrorAt str "Expected an inline code element"
     let s := s.getString
-    let html : Html := {{<code class="color-preview"><span class="swatch" style=s!"background-color: {s};"></span>{{s}}</code>}}
+    let html : Html := html%{<code class="color-preview"><span class="swatch" style={s!"background-color: {s};"}></span>{s}</code>}
     return #[← ``(Inline.other (InlineExt.blob $(quote html)) #[Inline.code $(quote s)])]
 
 end

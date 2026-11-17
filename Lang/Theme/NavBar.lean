@@ -7,7 +7,7 @@ import Lang.Theme.Head
 import Lang.Theme.Links
 
 open Verso.Genre Blog
-open Verso.Output Html
+open Verso.Output
 open Lang Components
 open Verso.Multi
 

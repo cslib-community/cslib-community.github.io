@@ -3,27 +3,27 @@ import Lean.Elab
 import VersoBlog
 
 open Verso Genre
-open Verso.Output Html
+open Verso.Output
 open Verso.Genre.Blog Template
 
 namespace Lang
 namespace Components
 
 def badge (content : String) : Html :=
-  {{
+  html%{
       <span>
-        {{ content }}
+        {content}
       </span>
-  }}
+  }
 
 def sectionTitle [MonadStateOf Component.State m] [Monad m]  (tag : Option String) (title : String) (subtitle : Option Html) : m Html := do
-  return {{
+  return html%{
     <div class="heading-section">
-      {{ tag <&> badge }}
-      <h1 class="heading-title">{{title}}</h1>
-      {{ subtitle <&> ({{<p class="heading-subtitle">{{·}}</p>}})}}
+      {tag <&> badge}
+      <h1 class="heading-title">{title}</h1>
+      {subtitle <&> (html%{<p class="heading-subtitle">{·}</p>})}
     </div>
-  }}
+  }
 
 block_component +directive sectionTitle' (tagg : Option String) (title : String) (subtitle : Option String) where
   toHtml _ _ _ _ _ := sectionTitle tagg title subtitle

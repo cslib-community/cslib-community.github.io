@@ -2,7 +2,7 @@ import Lean.Elab
 import VersoBlog
 
 open Verso Genre
-open Verso.Output Html
+open Verso.Output
 
 namespace Lang
 namespace Components

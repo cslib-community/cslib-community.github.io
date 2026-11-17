@@ -4,10 +4,10 @@ import Verso.Doc.Html
 import Lang.Meta.Svg
 import Lang.Components.Basic
 
-open Verso.Output Html
+open Verso.Output
 open Lean Elab Term
 open Verso Genre Blog ArgParse Doc Elab
-open Verso.Output Html
+open Verso.Output
 open Lang.Meta
 
 namespace Lang
@@ -163,7 +163,7 @@ private def renderSvgIcon (kind : IconKind) (params : IconParams) : Html :=
 
 private def renderImgIcon (src : String) (alt : String) (params : IconParams) : Html :=
   let width := params.width.getD "25"
-  {{ <img width={{width}} src={{src}} alt={{alt}} /> }}
+  html%{<img width={width} src={src} alt={alt}/>}
 
 private def renderCslibLogo (params : IconParams) : Html :=
   let fill := params.fill.getD "var(--color-text)"
@@ -175,11 +175,11 @@ private def renderCslibLogo (params : IconParams) : Html :=
 private def renderTextIcon (content : String) (params : IconParams) : Html :=
   let color := params.fill.getD "var(--color-primary)"
   let fontSize := params.fontSize.getD "40px"
-  {{
-    <i style=s!"width:{fontSize};height:{fontSize};color:{color};font-size:{fontSize};font-weight:500">
-      {{content}}
+  html%{
+    <i style={s!"width:{fontSize};height:{fontSize};color:{color};font-size:{fontSize};font-weight:500"}>
+      {content}
     </i>
-  }}
+  }
 
 def render : Icon → Html
   | ⟨kind, params⟩ =>
@@ -267,7 +267,7 @@ def generateRender (icon : Icon) : IO Html := do
     | .github | .moon | .search | .forall | .lambda | .cog | .external
     | .arrowForward | .book | .triangle | .globe | .cslibLogo
     | .team | .handShake | .rocket | .githubLogo | .blueskyLogo | .arrowRight
-    | .linkedinLogo | .mastodonLogo | .xLogo | .zulipLogo => htmlContent.asString
+    | .linkedinLogo | .mastodonLogo | .xLogo | .zulipLogo => htmlContent.render
     | .text content =>
       let color := params.fill.getD "var(--color-primary)"
       let fontSize := params.fontSize.getD "40px"
@@ -311,7 +311,7 @@ def generateRender (icon : Icon) : IO Html := do
     | .zulipLogo => "Zulip"
     | .text content => content
 
-  return {{ <img width={{width}} height={{height}} src={{s!"/static/icons/generated/{fileName}"}} alt={{altText}} /> }}
+  return html%{<img width={width} height={height} src={s!"/static/icons/generated/{fileName}"} alt={altText}/>}
 
 instance : Coe Icon Html where
   coe := Icon.render
